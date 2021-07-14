@@ -1,0 +1,127 @@
+<DOCTYPE!.html>
+
+<html>
+<head>
+<title>order form</title>
+<style >
+h2{
+  
+   margin-left: 40px;
+  
+}
+h1{
+  
+ margin-left: 40px;
+  
+}
+body{
+	margin:0 auto;
+	width:800px;
+	height: 620px;
+	border: 1px solid black;
+	padding: 30px;
+	margin-top: 20px;
+}
+
+
+</style>
+
+</head>
+<body>
+	<h1 > Buy T-shirts Online</h1>
+  	<h2>Fill out the form below and click "Order Now"to order</h2>
+
+<form name ="order" action="FORM.php " method="post">
+<table width ="800px" >
+</tr>
+<tr>
+<td  align="center">
+
+<label>Search by order number:<label> 
+</td>
+<td>
+<input type="text" name="order number" required pattern="[0-9]{1,}" title="Should be a number">
+<button>Search</button>
+</td>
+
+</tr>
+<tr>
+<td align="center">
+<label>Choose your size:<label>
+</td>
+<td> 
+<input type="radio" name="size" value="Small" required="">Small 
+<input type="radio" name="size" value="Medium" required="">Medium
+<input type="radio" name="size" value="Large" required=""> Large<br>
+ </td>
+
+
+</tr>
+<tr>
+<td align="center">
+<label>Choose your colour:<label>
+</td>
+<td> 
+<select name="colours" required="">
+<option value="Red">Red</option>
+<option value="Purple">Purple</option>
+<option value="Blue">Blue</option>
+<option value="Green">Green</option>
+</select>
+</td>
+
+</tr>
+<tr>
+<td align="center">
+<label>Extra Items:<label >
+</td>
+<td> 
+<input type="checkbox" name="item1" value="Cap">Cap<br>
+<input type="checkbox" name="item2" value="Wrist band">Wrist Band
+</td>
+
+
+
+
+</tr>
+<tr>
+<td align="center">
+<label >Deliver To:<label >
+</td>
+
+
+<td>
+<label>First Name:<label>
+<input type="text" name="firstname" required="" pattern="[A-Za-z]{1,}" title="Name should not contain numbers"><br>    <br>
+
+<label >Last Name:<label>
+<input type="text" name="lastname" required=""  pattern="[A-Za-z]{1,}" title="Name should not contain numbers"><br><br>
+
+<label>Address1 &nbsp;  :<label>
+<input type="text" name="address1" required=""><br><br>
+
+
+<label>Address2 &nbsp;  :<label>
+<input type="text" name="address2" ><br><br>
+
+
+<label>Address3 &nbsp;  :<label>
+<input type="text" name="address3"><br><br>
+</td>
+
+</tr>
+<tr>
+<td align="center">
+<label>Your Comments:<label><br><br>
+</td>
+<td>
+
+<textarea name="comments" id="comments" rows="10" cols="50" required=" "></textarea><br>
+<input type="submit" value="Order Now">
+</td>
+
+
+</table>
+</form>
+</body>
+ </html>

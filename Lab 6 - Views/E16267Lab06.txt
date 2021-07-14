@@ -1,0 +1,358 @@
+
+/*E/16/267*/
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+Answers
+
+
+1.
+mysql> create database e16267lab06;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| e16267lab06        |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use e16267lab06
+Database changed
+
+mysql> create table Student(
+    -> Name varchar(100),
+    -> RegistrationNo INT(3),
+    -> GPA DECIMAL(3,2),
+    -> ConvocationRegNo INT(3),
+    -> Class varchar(50),
+    -> PRIMARY KEY (RegistrationNo));
+Query OK, 0 rows affected (0.18 sec)
+
+
+mysql> show tables;
++-----------------------+
+| Tables_in_e16267lab06 |
++-----------------------+
+| Student               |
++-----------------------+
+1 row in set (0.00 sec)
+
+mysql> describe Student;
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| Name             | varchar(100) | YES  |     | NULL    |       |
+| RegistrationNo   | int(3)       | NO   | PRI | NULL    |       |
+| GPA              | decimal(3,2) | YES  |     | NULL    |       |
+| ConvocationRegNo | int(3)       | YES  |     | NULL    |       |
+| Class            | varchar(50)  | YES  |     | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> insert into Student (Name, RegistrationNo,GPA)
+    -> values
+    -> ('Sameera',435,3.25),
+    -> ('Kasun',210,3.40),
+    -> ('Kalpa',201,3.10),
+    -> ('Chathura',312,3.85),
+    -> ('Lakmali',473,3.75),
+    -> ('Sidath',352,3.30),
+    -> ('Kumudu',111,3.70),
+    -> ('Nalin',456,3.05),
+    -> ('Rohani',324,3.70),
+    -> ('Chithra',231,3.30);
+Query OK, 10 rows affected (0.06 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT*FROM Student;
++----------+----------------+------+------------------+-------+
+| Name     | RegistrationNo | GPA  | ConvocationRegNo | Class |
++----------+----------------+------+------------------+-------+
+| Kumudu   |            111 | 3.70 |             NULL | NULL  |
+| Kalpa    |            201 | 3.10 |             NULL | NULL  |
+| Kasun    |            210 | 3.40 |             NULL | NULL  |
+| Chithra  |            231 | 3.30 |             NULL | NULL  |
+| Chathura |            312 | 3.85 |             NULL | NULL  |
+| Rohani   |            324 | 3.70 |             NULL | NULL  |
+| Sidath   |            352 | 3.30 |             NULL | NULL  |
+| Sameera  |            435 | 3.25 |             NULL | NULL  |
+| Nalin    |            456 | 3.05 |             NULL | NULL  |
+| Lakmali  |            473 | 3.75 |             NULL | NULL  |
++----------+----------------+------+------------------+-------+
+10 rows in set (0.00 sec)
+
+**************************************************************************************************************************************************************************************
+
+2.
+mysql> create table Convocation(
+    -> LastName varchar(100),
+    -> Address varchar(200),
+    -> Age int(2),
+    -> RegistrationNo int(3),
+    -> ConvocationRegNo int(3),
+    -> foreign key(RegistrationNo) references Student(RegistrationNo) on delete cascade on update cascade,
+    -> primary key(ConvocationRegNo));
+Query OK, 0 rows affected (0.24 sec)
+
+mysql> describe Convocation;
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| LastName         | varchar(100) | YES  |     | NULL    |       |
+| Address          | varchar(200) | YES  |     | NULL    |       |
+| Age              | int(2)       | YES  |     | NULL    |       |
+| RegistrationNo   | int(3)       | YES  | MUL | NULL    |       |
+| ConvocationRegNo | int(3)       | NO   | PRI | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+**************************************************************************************************************************************************************************************
+
+3.
+mysql>  delimiter //
+mysql> create procedure storeDetails (in
+    -> in_LastName varchar(100),in_Address varchar(200),in_Age int(2),in_RegistrationNo int(3),in_ConvocationRegNo int(2))
+    -> begin
+    -> insert into Convocation values(in_LastName,in_Address,in_Age,in_RegistrationNo,in_ConvocationRegNo);
+    -> update Student set ConvocationRegNo=in_ConvocationRegNo where RegistrationNo=in_RegistrationNo;
+    -> end //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  delimiter ;
+
+
+**************************************************************************************************************************************************************************************
+
+4.
+mysql> call storeDetails('Dissawa','Peradeniya rd, Kandy',25,435,1);
+Query OK, 1 row affected (0.08 sec)
+
+mysql> call storeDetails('Silva', '46, Galle Road,Wellawatta,Colombo 00600', 26, 312, 2);
+Query OK, 1 row affected (0.12 sec)
+
+mysql> call storeDetails('Perera', 'Mango Grove,Mallakam East,Chunnakam', 25, 473, 3);
+Query OK, 1 row affected (0.08 sec)
+
+mysql> call storeDetails('Wijethunge', '127/26,Nugawela,warallagama,Kandy', 25, 352, 4);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> call storeDetails('Dissanayake', '128/4,Kulugammmana,Kandy', 27, 456, 5);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from Convocation;
++-------------+-----------------------------------------+------+----------------+------------------+
+| LastName    | Address                                 | Age  | RegistrationNo | ConvocationRegNo |
++-------------+-----------------------------------------+------+----------------+------------------+
+| Dissawa     | Peradeniya rd, Kandy                    |   25 |            435 |                1 |
+| Silva       | 46, Galle Road,Wellawatta,Colombo 00600 |   26 |            312 |                2 |
+| Perera      | Mango Grove,Mallakam East,Chunnakam     |   25 |            473 |                3 |
+| Wijethunge  | 127/26,Nugawela,warallagama,Kandy       |   25 |            352 |                4 |
+| Dissanayake | 128/4,Kulugammmana,Kandy                |   27 |            456 |                5 |
++-------------+-----------------------------------------+------+----------------+------------------+
+5 rows in set (0.00 sec)
+
+**************************************************************************************************************************************************************************************
+
+5.
+
+mysql> create view Registered as
+    ->  select s.Name, c.LastName, s.RegistrationNo, s.GPA, c.ConvocationRegNo,c.Address,c.Age
+    -> from Student s, Convocation c
+    -> where s.RegistrationNo in (select RegistrationNo from Convocation) and s.RegistrationNo=c.RegistrationNo;
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> select * from Registered;
++----------+-------------+----------------+------+------------------+-----------------------------------------+------+
+| Name     | LastName    | RegistrationNo | GPA  | ConvocationRegNo | Address                                 | Age  |
++----------+-------------+----------------+------+------------------+-----------------------------------------+------+
+| Sameera  | Dissawa     |            435 | 3.25 |                1 | Peradeniya rd, Kandy                    |   25 |
+| Chathura | Silva       |            312 | 3.85 |                2 | 46, Galle Road,Wellawatta,Colombo 00600 |   26 |
+| Lakmali  | Perera      |            473 | 3.75 |                3 | Mango Grove,Mallakam East,Chunnakam     |   25 |
+| Sidath   | Wijethunge  |            352 | 3.30 |                4 | 127/26,Nugawela,warallagama,Kandy       |   25 |
+| Nalin    | Dissanayake |            456 | 3.05 |                5 | 128/4,Kulugammmana,Kandy                |   27 |
++----------+-------------+----------------+------+------------------+-----------------------------------------+------+
+5 rows in set (0.00 sec)
+
+
+**************************************************************************************************************************************************************************************
+
+6.
+mysql> CREATE VIEW notRegistered
+    -> AS SELECT Student.Name, Student.RegistrationNo, Student.GPA, Convocation.Address, Convocation.Age
+    -> FROM Student LEFT OUTER JOIN Convocation ON Student.ConvocationRegNo = Convocation.ConvocationRegNo
+    -> WHERE  Convocation.ConvocationRegNo IS NULL;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from notRegistered;
++---------+----------------+------+---------+------+
+| Name    | RegistrationNo | GPA  | Address | Age  |
++---------+----------------+------+---------+------+
+| Kumudu  |            111 | 3.70 | NULL    | NULL |
+| Kalpa   |            201 | 3.10 | NULL    | NULL |
+| Kasun   |            210 | 3.40 | NULL    | NULL |
+| Chithra |            231 | 3.30 | NULL    | NULL |
+| Rohani  |            324 | 3.70 | NULL    | NULL |
++---------+----------------+------+---------+------+
+5 rows in set (0.00 sec)
+
+/*with avilable columns*/
+
+mysql>create view NotRegistered as
+	->select s.Name, s.RegistrationNo, s.GPA
+    ->from Student s
+	->where s.RegistrationNo not in (select RegistrationNo from Convocation);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>select * from NotRegistered;  
++---------+----------------+------+
+| Name    | RegistrationNo | GPA  | 
++---------+----------------+------+
+| Kumudu  |            111 | 3.70 | 
+| Kalpa   |            201 | 3.10 | 
+| Kasun   |            210 | 3.40 | 
+| Chithra |            231 | 3.30 | 
+| Rohani  |            324 | 3.70 | 
++---------+----------------+------+
+5 rows in set (0.00 sec)
+
+**************************************************************************************************************************************************************************************
+
+7.
+
+mysql> create table LateRegistration(
+    -> LastName varchar(100),
+    -> Address varchar(200),
+    ->  Age int(2),
+    ->  RegistrationNo int(3),
+    ->  ConvocationRegNo int(3),
+    -> foreign key(RegistrationNo) references Student(RegistrationNo),
+    -> primary key(ConvocationRegNo));
+Query OK, 0 rows affected (0.23 sec)
+
+
+**************************************************************************************************************************************************************************************
+
+8.
+
+mysql> delimiter //
+mysql> create trigger lateRegistrationTrigger
+    -> after insert on LateRegistration
+    -> for each row update Student s set s.ConvocationRegNo=new.ConvocationRegNo where s.RegistrationNo=new.RegistrationNo;
+    -> //
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> delimiter ;
+
+
+**************************************************************************************************************************************************************************************
+
+9.
+
+mysql> mysql> insert into LateRegistration values 
+		   ->('Jayatissa', '1/4, Kandy Road, Kurunagale', 25, 210, 6),
+		   ->('Adikari', '85/7,Kandy Road, Peradeniya', 24, 201, 7),
+		   ->('Hearth', '127/86, samagi Mawatha, Lewalla', 2 8), 
+		   ->('Silva', '128/4, Barigama Road, Mawathagama', 27, 324, 9),
+		   ->('Rathnayake', '198/8, Nugawela, Warallagama', 24, 231, 10);
+Query OK, 5 rows affected (0.10 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from Student;
++----------+----------------+------+------------------+-------+
+| Name     | RegistrationNo | GPA  | ConvocationRegNo | Class |
++----------+----------------+------+------------------+-------+
+| Kumudu   |            111 | 3.70 |                8 | NULL  |
+| Kalpa    |            201 | 3.10 |                7 | NULL  |
+| Kasun    |            210 | 3.40 |                6 | NULL  |
+| Chithra  |            231 | 3.30 |               10 | NULL  |
+| Chathura |            312 | 3.85 |                2 | NULL  |
+| Rohani   |            324 | 3.70 |                9 | NULL  |
+| Sidath   |            352 | 3.30 |                4 | NULL  |
+| Sameera  |            435 | 3.25 |                1 | NULL  |
+| Nalin    |            456 | 3.05 |                5 | NULL  |
+| Lakmali  |            473 | 3.75 |                3 | NULL  |
++----------+----------------+------+------------------+-------+
+10 rows in set (0.01 sec)
+
+
+mysql> select * from LateRegistration;
++------------+-----------------------------------+------+----------------+------------------+
+| LastName   | Address                           | Age  | RegistrationNo | ConvocationRegNo |
++------------+-----------------------------------+------+----------------+------------------+
+| Jayatissa  | 1/4, Kandy Road, Kurunagale       |   25 |            210 |                6 |
+| Adikari    | 85/7,Kandy Road, Peradeniya       |   24 |            201 |                7 |
+| Hearth     | 127/86, samagi Mawatha, Lewalla   |   26 |            111 |                8 |
+| Silva      | 128/4, Barigama Road, Mawathagama |   27 |            324 |                9 |
+| Rathnayake | 198/8, Nugawela, Warallagama      |   24 |            231 |               10 |
++------------+-----------------------------------+------+----------------+------------------+
+5 rows in set (0.00 sec)
+
+
+**************************************************************************************************************************************************************************************
+
+10.
+
+mysql> delimiter //
+mysql> create procedure assignGPA ()
+    -> begin
+    -> update Student set Class = 'First class honors' where GPA >= 3.70;
+    -> update Student set Class = 'Second class honors-upper division' where GPA < 3.70 and GPA >= 3.30;
+    -> update Student set Class = 'Second class honors-lower division' where GPA < 3.30 and GPA >= 2.70;
+    -> update Student set Class = 'Third class honors' where GPA < 2.70 and GPA >= 2.0;
+    -> end;//
+Query OK, 0 rows affected (0.01 sec)
+
+
+
+mysql> call assignGPA();
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> SELECT * FROM Student;
++----------+----------------+------+------------------+------------------------------------+
+| Name     | RegistrationNo | GPA  | ConvocationRegNo | Class                              |
++----------+----------------+------+------------------+------------------------------------+
+| Kumudu   |            111 | 3.70 |                8 | First class honors                 |
+| Kalpa    |            201 | 3.10 |                7 | Second class honors-lower division |
+| Kasun    |            210 | 3.40 |                6 | Second class honors-upper division |
+| Chithra  |            231 | 3.30 |               10 | Second class honors-upper division |
+| Chathura |            312 | 3.85 |                2 | First class honors                 |
+| Rohani   |            324 | 3.70 |                9 | First class honors                 |
+| Sidath   |            352 | 3.30 |                4 | Second class honors-upper division |
+| Sameera  |            435 | 3.25 |                1 | Second class honors-lower division |
+| Nalin    |            456 | 3.05 |                5 | Second class honors-lower division |
+| Lakmali  |            473 | 3.75 |                3 | First class honors                 |
++----------+----------------+------+------------------+------------------------------------+
+10 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
